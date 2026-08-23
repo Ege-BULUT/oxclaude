@@ -9,8 +9,8 @@ metadata:
 
 End state: the user has two commands.
 
-- `claude` — unchanged, their normal Anthropic account.
-- `oxclaude` — same CLI, same project, routed to OpenRouter's `stealth/ox-alpha`, with **Ox Alpha** selectable in `/model`.
+- `claude`: unchanged, their normal Anthropic account.
+- `oxclaude`: same CLI, same project, routed to OpenRouter's `stealth/ox-alpha`, with **Ox Alpha** selectable in `/model`.
 
 ## Rules
 
@@ -18,11 +18,11 @@ End state: the user has two commands.
 - Do not put `ANTHROPIC_*` exports at the top level of a shell profile. That hijacks every `claude` session. Only the wrapper function may set them.
 - Show the user each command before running it, and run only the setup commands described here.
 
-## Step 0 — detect the environment
+## Step 0: detect the environment
 
 Run what applies:
 
-- OS: `uname -s` (Darwin / Linux) — on Windows PowerShell use `$PSVersionTable.OS`.
+- OS: `uname -s` (Darwin / Linux). On Windows PowerShell use `$PSVersionTable.OS`.
 - Shell: `echo $SHELL` (expect `/bin/zsh` on macOS, often `/bin/bash` on Linux).
 - Claude Code present: `claude --version`. If missing, stop and link <https://docs.claude.com/en/docs/claude-code/setup>.
 - Already installed: `grep -n oxclaude ~/.zshrc ~/.bashrc 2>/dev/null` (PowerShell: `Select-String oxclaude $PROFILE`). If found, skip to Step 3.
@@ -30,15 +30,15 @@ Run what applies:
 
 Pick the shell profile: zsh → `~/.zshrc`, bash → `~/.bashrc` (macOS bash → `~/.bash_profile`), PowerShell → `$PROFILE`.
 
-## Step 1 — the user gets an OpenRouter key
+## Step 1: the user gets an OpenRouter key
 
 Tell them, with the links:
 
-1. Open <https://openrouter.ai/settings/keys> and sign in — **Continue with GitHub** (or Google) is one click, no password.
+1. Open <https://openrouter.ai/settings/keys> and sign in. **Continue with GitHub** (or Google) is one click, no password.
 2. Click **Create Key**, name it, copy the `sk-or-v1-…` value. It is shown only once.
 3. Ox Alpha is **free** during preview ($0 in / $0 out, 1M context), so no credits are needed: <https://openrouter.ai/stealth/ox-alpha>
 
-Also state once: stealth models retain prompts for the provider behind them — no secrets, no client code. Logging options: <https://openrouter.ai/settings/privacy>
+Also state once: stealth models retain prompts for the provider behind them: no secrets, no client code. Logging options: <https://openrouter.ai/settings/privacy>
 
 Then give them the key-store command to run themselves (key never passes through you):
 
@@ -56,9 +56,9 @@ Set-Content -NoNewline -Path "$HOME\.config\openrouter\key" -Value 'sk-or-v1-YOU
 icacls "$HOME\.config\openrouter\key" /inheritance:r /grant:r "$($env:USERNAME):(R,W)" | Out-Null
 ```
 
-Users who already export `OPENROUTER_API_KEY` can skip this — the wrapper prefers that variable.
+Users who already export `OPENROUTER_API_KEY` can skip this. The wrapper prefers that variable.
 
-## Step 2 — install the wrapper
+## Step 2: install the wrapper
 
 ### macOS / Linux (zsh or bash)
 
@@ -67,7 +67,7 @@ Append to the profile from Step 0 (`~/.zshrc` shown; swap the path for bash):
 ```bash
 cat >> ~/.zshrc <<'EOF'
 
-# Ox Alpha (OpenRouter) — only inside `oxclaude`; plain `claude` stays on Anthropic
+# Ox Alpha (OpenRouter): only inside `oxclaude`; plain `claude` stays on Anthropic
 oxclaude() {
   local key="${OPENROUTER_API_KEY:-$(cat ~/.config/openrouter/key 2>/dev/null)}"
   if [ -z "$key" ]; then
@@ -131,7 +131,7 @@ WSL and Git Bash on Windows use the macOS/Linux block instead.
 
 Other shells (fish, nushell): same eight variables, set for one command only.
 
-## Step 3 — verify
+## Step 3: verify
 
 1. `oxclaude --version` → prints the Claude Code version. If it prints the "No OpenRouter key" error, Step 1 was not completed.
 2. `oxclaude` in a project, then `/status` → API base reads `https://openrouter.ai/api`, model reads `stealth/ox-alpha`.
@@ -144,9 +144,9 @@ Usage shows up at <https://openrouter.ai/activity>.
 
 | Symptom | Cause / fix |
 | --- | --- |
-| `401 Unauthorized` | Bad key, or a real `ANTHROPIC_API_KEY` is winning. The wrapper blanks it — check it was not re-set after. |
+| `401 Unauthorized` | Bad key, or a real `ANTHROPIC_API_KEY` is winning. The wrapper blanks it. Check it was not re-set after. |
 | `404 not found` | Base URL must be `https://openrouter.ai/api`, **not** `/api/v1`. Claude Code appends `/v1/messages`. |
-| `model not found` | ID must be exactly `stealth/ox-alpha`. Stealth models get renamed or retired — check <https://openrouter.ai/stealth/ox-alpha>. |
+| `model not found` | ID must be exactly `stealth/ox-alpha`. Stealth models get renamed or retired. Check <https://openrouter.ai/stealth/ox-alpha>. |
 | `oxclaude: command not found` | Profile not reloaded, or written to a profile the shell does not read. Re-run `source <profile>` / `. $PROFILE`. |
 | Ox Alpha missing from `/model` | Requires Claude Code 2.1+ (`ANTHROPIC_CUSTOM_MODEL_OPTION` support). Typing the model name into `/model` still works. |
 | Plain `claude` also on OpenRouter | Leftover top-level `export ANTHROPIC_*` lines in a profile. Remove them; only the function should set these. |

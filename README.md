@@ -10,7 +10,7 @@
 
 **[oxclaude.vercel.app](https://oxclaude.vercel.app)**
 
-**Run Claude Code on OpenRouter's free Ox Alpha stealth model — without touching your Anthropic account.**
+**Run Claude Code on OpenRouter's free Ox Alpha stealth model, without touching your Anthropic account.**
 
 [![Claude Code skill](https://img.shields.io/badge/claude--code-skill-6e56cf.svg?style=flat-square)](SKILL.md)
 [![Model: stealth/ox-alpha](https://img.shields.io/badge/model-stealth%2Fox--alpha-black.svg?style=flat-square)](https://openrouter.ai/stealth/ox-alpha)
@@ -22,22 +22,22 @@
 ---
 
 `oxclaude` is a tiny shell wrapper: same Claude Code CLI, same project, but routed to
-[`stealth/ox-alpha`](https://openrouter.ai/stealth/ox-alpha) on OpenRouter — **free during its
+[`stealth/ox-alpha`](https://openrouter.ai/stealth/ox-alpha) on OpenRouter, **free during its
 preview** ($0 in / $0 out, 1M-token context, tool calling). Your plain `claude` command and your
 Anthropic subscription stay exactly as they were.
 
 This repo ships it two ways:
 
-1. **`/init-oxclaude` skill** — [`SKILL.md`](SKILL.md) teaches a coding agent (Claude Code,
+1. **`/init-oxclaude` skill**. [`SKILL.md`](SKILL.md) teaches a coding agent (Claude Code,
    opencode, …) to set everything up for you. Drop it in your skills folder and type
    `/init-oxclaude`.
-2. **Manual install** — copy one shell function into your profile yourself (below).
+2. **Manual install**. Copy one shell function into your profile yourself (below).
 
 Either way you end up with two commands:
 
 | Command | What runs |
 | --- | --- |
-| `claude` | Your normal Anthropic account — untouched. |
+| `claude` | Your normal Anthropic account, untouched. |
 | `oxclaude` | Same CLI on OpenRouter's `stealth/ox-alpha`, with **Ox Alpha** selectable in `/model`. |
 
 ## Quick start (manual)
@@ -58,7 +58,7 @@ mkdir -p ~/.config/openrouter && printf '%s' 'sk-or-v1-YOUR-KEY-HERE' > ~/.confi
 ```bash
 cat >> ~/.zshrc <<'EOF'
 
-# Ox Alpha (OpenRouter) — only inside `oxclaude`; plain `claude` stays on Anthropic
+# Ox Alpha (OpenRouter): only inside `oxclaude`; plain `claude` stays on Anthropic
 oxclaude() {
   local key="${OPENROUTER_API_KEY:-$(cat ~/.config/openrouter/key 2>/dev/null)}"
   if [ -z "$key" ]; then
@@ -79,7 +79,7 @@ EOF
 source ~/.zshrc
 ```
 
-Already export `OPENROUTER_API_KEY`? The wrapper prefers it — skip the key file.
+Already export `OPENROUTER_API_KEY`? The wrapper prefers it. Skip the key file.
 
 **3. Verify.**
 
@@ -93,7 +93,7 @@ Usage shows up within seconds on [openrouter.ai/activity](https://openrouter.ai/
 
 ## Install the skill instead
 
-Let your agent do steps 1–3 (it never touches the key — you paste it into your own terminal):
+Let your agent do steps 1 to 3 (it never touches the key; you paste it into your own terminal):
 
 ```bash
 mkdir -p ~/.claude/skills/init-oxclaude
@@ -115,12 +115,12 @@ OpenRouter. Nothing else changes.
 
 | Symptom | Fix |
 | --- | --- |
-| `401 Unauthorized` | Bad key, or a real `ANTHROPIC_API_KEY` is winning. The wrapper blanks it — make sure no profile re-sets it. |
+| `401 Unauthorized` | Bad key, or a real `ANTHROPIC_API_KEY` is winning. The wrapper blanks it. Make sure no profile re-sets it. |
 | `404 not found` | Base URL must be `https://openrouter.ai/api`, **not** `/api/v1`. Claude Code appends `/v1/messages` itself. |
-| `model not found` | ID must be exactly `stealth/ox-alpha` — check the [model page](https://openrouter.ai/stealth/ox-alpha); stealth models get renamed or retired. |
+| `model not found` | ID must be exactly `stealth/ox-alpha`. Check the [model page](https://openrouter.ai/stealth/ox-alpha); stealth models get renamed or retired. |
 | `oxclaude: command not found` | Profile not reloaded: `source ~/.zshrc` (or `. $PROFILE`). |
 | Ox Alpha missing from `/model` | Needs Claude Code 2.1+ for `ANTHROPIC_CUSTOM_MODEL_OPTION`; typing the model name still works. |
-| Plain `claude` also hits OpenRouter | Leftover top-level `export ANTHROPIC_*` lines in a profile — remove them; only the function should set these. |
+| Plain `claude` also hits OpenRouter | Leftover top-level `export ANTHROPIC_*` lines in a profile. Remove them; only the function should set these. |
 
 Full table plus setup details live in [`SKILL.md`](SKILL.md).
 
@@ -128,7 +128,7 @@ Full table plus setup details live in [`SKILL.md`](SKILL.md).
 
 - One process = one provider: a running session can't mix Anthropic and OpenRouter models. Start
   `oxclaude` for Ox Alpha, `claude` for Anthropic.
-- Stealth models may retain prompts for the provider behind them — keep secrets and client code
+- Stealth models may retain prompts for the provider behind them. Keep secrets and client code
   out. Logging options: [openrouter.ai/settings/privacy](https://openrouter.ai/settings/privacy).
 - Uninstall: delete the `oxclaude` block from your profile and `rm ~/.config/openrouter/key`.
 
